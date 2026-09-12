@@ -78,17 +78,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // LÓGICA DE TIENDA Y CARRITO CON CATÁLOGO OFICIAL
   // =========================================================================
   
-  // Arreglo de productos extraídos del archivo Excel "Catálogo Veterinaria San Marcos"
-  const inventario = [
-    { id: "ME001", nombre: "Amoxibay 250mg", categoria: "Antibióticos", precio: 4200, img: "https://plus.unsplash.com/premium_photo-1786961711020-1b55448cedb2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-    { id: "ME004", nombre: "Nexgard Masticable", categoria: "Antiparasitarios", precio: 9500, img: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=400&auto=format&fit=crop" },
-    { id: "ME005", nombre: "Bravecto Masticable", categoria: "Antiparasitarios", precio: 18900, img: "https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=400&auto=format&fit=crop" },
-    { id: "ME006", nombre: "Revolution Plus Gato", categoria: "Antiparasitarios", precio: 14500, img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=400&auto=format&fit=crop" },
-    { id: "ME009", nombre: "Meloxicam 1mg", categoria: "Antiinflamatorios", precio: 4500, img: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?q=80&w=400&auto=format&fit=crop" },
-    { id: "ME011", nombre: "Clorhexidina Shampoo", categoria: "Dermatología", precio: 8900, img: "https://images.unsplash.com/photo-1597595735781-6a57fb8e3e3d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-    { id: "ME016", nombre: "Vetmedin 2.5mg", categoria: "Cardíaco", precio: 28000, img: "https://images.unsplash.com/photo-1673134768453-ffaf2f279b81?q=80&w=1174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-    { id: "ME021", nombre: "Omega vet 3-6-9", categoria: "Suplementos", precio: 9900, img: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?q=80&w=400&auto=format&fit=crop" }
-  ];
+    // Productos: se cargan del localStorage (los gestiona el panel admin)
+  let inventario = JSON.parse(localStorage.getItem("productosVeterinaria")) || [];
+
+  // Si aún no hay nada guardado (primera vez), sembrar con el catálogo inicial
+  if (inventario.length === 0) {
+    inventario = [
+      { id: "ME001", nombre: "Amoxibay 250mg", categoria: "Antibióticos", precio: 4200, img: "https://plus.unsplash.com/premium_photo-1786961711020-1b55448cedb2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+      { id: "ME004", nombre: "Nexgard Masticable", categoria: "Antiparasitarios", precio: 9500, img: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=400&auto=format&fit=crop" },
+      { id: "ME005", nombre: "Bravecto Masticable", categoria: "Antiparasitarios", precio: 18900, img: "https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=400&auto=format&fit=crop" },
+      { id: "ME006", nombre: "Revolution Plus Gato", categoria: "Antiparasitarios", precio: 14500, img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=400&auto=format&fit=crop" },
+      { id: "ME009", nombre: "Meloxicam 1mg", categoria: "Antiinflamatorios", precio: 4500, img: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?q=80&w=400&auto=format&fit=crop" },
+      { id: "ME011", nombre: "Clorhexidina Shampoo", categoria: "Dermatología", precio: 8900, img: "https://images.unsplash.com/photo-1597595735781-6a57fb8e3e3d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+      { id: "ME016", nombre: "Vetmedin 2.5mg", categoria: "Cardíaco", precio: 28000, img: "https://images.unsplash.com/photo-1673134768453-ffaf2f279b81?q=80&w=1174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+      { id: "ME021", nombre: "Omega vet 3-6-9", categoria: "Suplementos", precio: 9900, img: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?q=80&w=400&auto=format&fit=crop" }
+    ];
+    localStorage.setItem("productosVeterinaria", JSON.stringify(inventario));
+  }
 
   let carrito = JSON.parse(localStorage.getItem('carritoVeterinaria')) || [];
   
@@ -219,10 +225,22 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       if (esValidoCorreoLogin && esValidoPasswordLogin) {
-        alert("¡Inicio de sesión exitoso! (Simulación)");
-        formLogin.reset();
-        loginCorreo.classList.remove('is-valid');
-        loginPassword.classList.remove('is-valid');
+
+        // Credenciales del único administrador
+        const CORREO_ADMIN = "admin@gmail.com";
+        const CLAVE_ADMIN = "admin123";
+
+        // ¿Es el administrador? → lo mandamos al panel
+        if (correoValue === CORREO_ADMIN && passwordValue === CLAVE_ADMIN) {
+          sessionStorage.setItem("sesionAdmin", "activa");
+          window.location.href = "admin.html";
+        } else {
+          // Cliente normal (seguía como antes)
+          alert("¡Inicio de sesión exitoso! (Simulación)");
+          formLogin.reset();
+          loginCorreo.classList.remove('is-valid');
+          loginPassword.classList.remove('is-valid');
+        }
       }
     });
 
